@@ -53,8 +53,8 @@ def karger_min_cut_circuit(qc, exclude_nodes, bool_plot = None):
     # # Add an edge with a large weight between the top left qubit and the first initial qubit,
     # and also for the top right qubit and the final initial qubit
 
-    G.add_edge(f'q_0', qubit_top_nodes[0], weight=1000)
-    G.add_edge(f'q_{qc.num_qubits - 1}', qubit_top_nodes[qc.num_qubits -1], weight=1000)
+    G.add_edge(f'q_0', qubit_top_nodes[0], weight=100000)
+    G.add_edge(f'q_{qc.num_qubits - 1}', qubit_top_nodes[qc.num_qubits -1], weight=100000)
 
     # Merge the top qubits with the adjacent excluded qubit
     

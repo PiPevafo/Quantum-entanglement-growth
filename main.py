@@ -1,48 +1,33 @@
-from qiskit import *
-from qiskit import QuantumCircuit
-from qiskit import transpile
-from qiskit_aer import Aer
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_histogram
-from qiskit.quantum_info import DensityMatrix
-from qiskit_ibm_runtime import QiskitRuntimeService
-
-
 import matplotlib.pyplot as plt
+import time
 
-from functions import draw_graph
-from functions import modified_karger_algorithm
-from functions import min_cut
+from functions import draw_graph, modified_karger_algorithm, min_cut, plot_graph
+from circuits import random_circuit, cut_growth
 
  
- 
-#Create my circuit
-n_qubits = 10
-n_partition = 4
 
-qc = QuantumCircuit(n_qubits)
-qc.name = "prueba"
-qc.h(0)
-qc.cx(6,7)
-qc.cx(7, 8)
-for i in range(9):
-    qc.cx(i, i+1)
+# qc = random_circuit.ramdon_circuit(n_qubits = 10, depth = 1000, name = "prueba")
 
-qc.cx(3, 4)
-qc.cx(4, 5)
-qc.swap(4, 5)
+# G, pos, qubit_top_nodes, name = draw_graph.circuit_to_graph(qc)
 
-G, pos, qubit_top_nodes, name = draw_graph.circuit_to_graph(qc)
+# draw_graph.draw_circuit_graph(G, pos, name = f"{name}_Graph")
 
-# Show the circuit and graph
-circuit_image = qc.draw(output='mpl')
-circuit_image.savefig('results/Circuit.png')
+# exclude_nodes = [4, 5]
 
+# min_cut.min_cut(qc, exclude_nodes, 100, False, False)
 
-draw_graph.draw_circuit_graph(G, pos, name = "Graph")
+# draw_graph.cut_animation("results/graphs/min_cut_prueba", "animation")
 
-exclude_nodes = [3, 4]
+start_time = time.time()
 
-min_cut.min_cut(qc, exclude_nodes, 1, True, True)
+cut_growth.cut_growth(total_qubits=100, total_depth=1000, exclude_nodes=[49,50], trials=20)
 
-draw_graph.cut_animation("results/graphs/min_cut_prueba", "animation")
+end_time = time.time()
+
+# Calcula el tiempo transcurrido
+elapsed_time = end_time - start_time
+
+# Imprime el tiempo transcurrido
+print(f"El tiempo de ejecución fue de {elapsed_time:.2f} segundos.")
+
+plot_graph.plot_graphs('results/circuits/qubits100_depth1000/results.dat')

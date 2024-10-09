@@ -19,7 +19,8 @@ def min_cut(qc, exclude_nodes, trials, bool_cuts = None, bool_plot = None):
         cuts.append(cut)
         min_cut = min(cut, min_cut)
          
-    print(f"The minimum cut passing through the quitbs {exclude_nodes} is: {min_cut}")
-    
     if bool_cuts is not None and bool_cuts is True:
+        print(f"The minimum cut passing through the quitbs {exclude_nodes} is: {min_cut}")
         print("The total cuts made are ", cuts)
+    
+    return min_cut 
