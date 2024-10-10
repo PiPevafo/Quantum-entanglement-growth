@@ -62,29 +62,58 @@ def circuit_to_graph(qc):
         'swap': 'green',
         # Add more colors for other gates if needed
     }
-    
+  
     for gate, qubits, clbits in qc.data:
         if gate.name in gate_colors: 
             qubit_indices = [qc.qubits.index(qubit) for qubit in qubits]
             gate_id = f'{gate.name.upper()}-{gate_counter}'
             G.add_node(gate_id, label=f'{gate.name.upper()}-{gate_counter}', index=gate_counter, color=gate_colors[gate.name])
-                
+            
             for qubit_index in qubit_indices:
-                if qubit_index in previous_gate_nodes:
-                    G.add_edge(gate_id, previous_gate_nodes[qubit_index], weight=1)
+                if qubit_index == 0 or qubit_index == n_qubits - 1:
+                    # Si el qubit es el primero o el último, asigna peso 3
+                    if qubit_index in previous_gate_nodes:
+                        # Check if an edge already exists between the current gate and the previous one
+                        if G.has_edge(gate_id, previous_gate_nodes[qubit_index]):
+                            # If the edge exists, increase its weight by 1 
+                            G[gate_id][previous_gate_nodes[qubit_index]]['weight'] += 1
+                        else:
+                            # Otherwise, create a new edge with weight 3
+                            G.add_edge(gate_id, previous_gate_nodes[qubit_index], weight=1000)
+                    else:
+                        G.add_edge(gate_id, f'q_{qubit_index}', weight=1000)
                 else:
-                    G.add_edge(gate_id, f'q_{qubit_index}', weight=1)
+                    # For other qubits, assign weight 1
+                    if qubit_index in previous_gate_nodes:
+                        # Check if an edge already exists between the current gate and the previous one
+                        if G.has_edge(gate_id, previous_gate_nodes[qubit_index]):
+                            # If the edge exists, increase its weight by 1
+                            G[gate_id][previous_gate_nodes[qubit_index]]['weight'] += 1
+                        else:
+                            # Otherwise, create a new edge with weight 1
+                            G.add_edge(gate_id, previous_gate_nodes[qubit_index], weight=1)
+                    else:
+                        G.add_edge(gate_id, f'q_{qubit_index}', weight=1)
+                    
+                # Update the previous_gate_nodes for this qubit
                 previous_gate_nodes[qubit_index] = gate_id
             
             gate_counter += 1
 
     # Connect the last nodes of the gates to the upper qubits
     for qubit_index in range(n_qubits):
-        if qubit_index in previous_gate_nodes:
-            G.add_edge(previous_gate_nodes[qubit_index], f'q_top_{qubit_index}')
+        if qubit_index == 0 or qubit_index == n_qubits - 1:
+            # If the qubit is the first or last, assign weight 1000 to the edge
+            if qubit_index in previous_gate_nodes:
+                G.add_edge(previous_gate_nodes[qubit_index], f'q_top_{qubit_index}', weight=1000)
+            else:
+                G.add_edge(f'q_{qubit_index}', f'q_top_{qubit_index}', weight=1000)
         else:
-            # If there is no associated gate node, directly connect the lower qubit to the upper qubit
-            G.add_edge(f'q_{qubit_index}', f'q_top_{qubit_index}', weight=1)
+            # For other qubits, assign weight 1
+            if qubit_index in previous_gate_nodes:
+                G.add_edge(previous_gate_nodes[qubit_index], f'q_top_{qubit_index}', weight=1)
+            else:
+                G.add_edge(f'q_{qubit_index}', f'q_top_{qubit_index}', weight=1)
 
     # Set the position of the nodes
     pos = {}

@@ -36,6 +36,7 @@ def merge_nodes(G, node1, node2):
 
 # Define the modified Karger's algorithm function for a quantum circuit
 
+
 def karger_min_cut_circuit(qc, exclude_nodes, bool_plot = None):
         
     G, pos, qubit_top_nodes, name = draw_graph.circuit_to_graph(qc)
@@ -49,12 +50,6 @@ def karger_min_cut_circuit(qc, exclude_nodes, bool_plot = None):
     
     exclude_nodes = [f'q_top_{node}' for node in exclude_nodes]
     G.add_edge(exclude_nodes[0], exclude_nodes[1], weight=0)    
-
-    # # Add an edge with a large weight between the top left qubit and the first initial qubit,
-    # and also for the top right qubit and the final initial qubit
-
-    G.add_edge(f'q_0', qubit_top_nodes[0], weight=100000)
-    G.add_edge(f'q_{qc.num_qubits - 1}', qubit_top_nodes[qc.num_qubits -1], weight=100000)
 
     # Merge the top qubits with the adjacent excluded qubit
     

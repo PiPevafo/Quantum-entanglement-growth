@@ -1,31 +1,9 @@
 from qiskit import *
 from qiskit import QuantumCircuit
-from qiskit import transpile
-from qiskit_aer import Aer
-from qiskit.quantum_info import Statevector
-from qiskit.visualization import plot_histogram
-from qiskit.quantum_info import DensityMatrix
-from qiskit_ibm_runtime import QiskitRuntimeService
 
 import random
 
-# #Create my circuit
-# n_qubits = 10
-# n_partition = 4
-
-# qc = QuantumCircuit(n_qubits)
-# qc.h(0)
-# qc.cx(6,7)
-# qc.cx(7, 8)
-# for i in range(9):
-#     qc.cx(i, i+1)
-
-# qc.cx(3, 4)
-# qc.cx(4, 5)
-# qc.swap(4, 5)
-
-
-def ramdon_circuit(n_qubits, depth, name, bool_plot = None, bol_dat = None, dat_file_path = None):
+def random_circuit(n_qubits, depth, name, bool_plot = None, bol_dat = None, dat_file_path = None):
     
     qc = QuantumCircuit(n_qubits)
     qc.name = name
