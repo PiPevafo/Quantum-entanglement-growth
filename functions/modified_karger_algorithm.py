@@ -43,9 +43,6 @@ def karger_min_cut_circuit(qc, exclude_nodes, bool_plot = None):
     
     G = G.copy()  # Copy the graph to avoid modifying the original graph
     
-    if exclude_nodes is None:
-        exclude_nodes = []
-    
     # Add an edge with weight 0 between the two excluded nodes 
     
     exclude_nodes = [f'q_top_{node}' for node in exclude_nodes]
@@ -70,7 +67,9 @@ def karger_min_cut_circuit(qc, exclude_nodes, bool_plot = None):
 
     iteration = 1
     
-        
+    # To save the minimal cut path
+    cut_path = []
+    G1 = G.copy()
     # While there are more than two nodes in the graph
     
     while len(G.nodes) > 2:
@@ -90,12 +89,13 @@ def karger_min_cut_circuit(qc, exclude_nodes, bool_plot = None):
 
             u, v = random.choice(edges)
             if v == exclude_nodes[0] or v == exclude_nodes[1]:
-                u, v = v, u
-                
+                u, v = v, u 
+            
             if bool_plot is not None and bool_plot == True: 
                 draw_graph.draw_circuit_graph(G, pos, f"{name}_{iteration}", u, v)
-            
+
         G = merge_nodes(G, u, v)
+        cut_path.append((u, v))
         
         iteration += 1
 
@@ -109,5 +109,5 @@ def karger_min_cut_circuit(qc, exclude_nodes, bool_plot = None):
     
     cut_weight = G[u][v].get('weight', 1)
     
-    return cut_weight
+    return cut_weight, cut_path, G1, pos, name
 

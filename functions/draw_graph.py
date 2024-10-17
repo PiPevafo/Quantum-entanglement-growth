@@ -4,6 +4,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import os
+import glob
 
 # Function to plot the circuit graph
 def draw_circuit_graph(G, pos, name = None, u = None, v = None):
@@ -16,9 +17,14 @@ def draw_circuit_graph(G, pos, name = None, u = None, v = None):
     if u is not None and v is not None:
         
         base_name = ''.join(filter(str.isalpha, name))
-        if not os.path.exists(f'results/graphs/min_cut_{base_name}'):
-            os.makedirs(f'results/graphs/min_cut_{base_name}')
-            
+        dir_path = f'results/graphs/min_cut_{base_name}'
+        if os.path.exists(dir_path):
+            files = glob.glob(f'{dir_path}/*.png')
+            for f in files:
+                os.remove(f)
+        else:
+            os.makedirs(dir_path)
+        
         nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
         plt.title("Circuit " + name + " before merge the nodes " + str(u) + " y " + str(v))
         path = f'results/graphs/min_cut_{base_name}/{name}.png'
@@ -105,9 +111,9 @@ def circuit_to_graph(qc):
         if qubit_index == 0 or qubit_index == n_qubits - 1:
             # If the qubit is the first or last, assign weight 1000 to the edge
             if qubit_index in previous_gate_nodes:
-                G.add_edge(previous_gate_nodes[qubit_index], f'q_top_{qubit_index}', weight=1000)
+                G.add_edge(previous_gate_nodes[qubit_index], f'q_top_{qubit_index}', weight=100000)
             else:
-                G.add_edge(f'q_{qubit_index}', f'q_top_{qubit_index}', weight=1000)
+                G.add_edge(f'q_{qubit_index}', f'q_top_{qubit_index}', weight=100000)
         else:
             # For other qubits, assign weight 1
             if qubit_index in previous_gate_nodes:

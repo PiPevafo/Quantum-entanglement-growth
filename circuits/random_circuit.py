@@ -22,10 +22,13 @@ def random_circuit(n_qubits, depth, name, bool_plot = None, bol_dat = None, dat_
             
             dat_file.write('\n')
     else:
+        for i in range(n_qubits):
+            qc.h(i)
         for i in range(depth):
             qubit = random.randint(0, n_qubits - 2)
             qc.cx(qubit, qubit + 1)
-            
+
+        
     if bool_plot is not None and bool_plot == True:
         circuit_image = qc.draw(output='mpl')
         circuit_image.savefig(f'results/{name}_circuit.png')
