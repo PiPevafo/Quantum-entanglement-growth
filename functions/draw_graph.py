@@ -77,17 +77,18 @@ def circuit_to_graph(qc):
             
             for qubit_index in qubit_indices:
                 if qubit_index == 0 or qubit_index == n_qubits - 1:
-                    # Si el qubit es el primero o el último, asigna peso 3
+                    # Si el qubit es el primero o el último, asigna peso alto
                     if qubit_index in previous_gate_nodes:
                         # Check if an edge already exists between the current gate and the previous one
                         if G.has_edge(gate_id, previous_gate_nodes[qubit_index]):
-                            # If the edge exists, increase its weight by 1 
+                            # If the edge exists, increase its weight by 1
+                            G[gate_id][previous_gate_nodes[qubit_index]]['weight'] = 100000 
                             G[gate_id][previous_gate_nodes[qubit_index]]['weight'] += 1
                         else:
-                            # Otherwise, create a new edge with weight 3
-                            G.add_edge(gate_id, previous_gate_nodes[qubit_index], weight=1000)
+                            # Otherwise, create a new edge with big weight
+                            G.add_edge(gate_id, previous_gate_nodes[qubit_index], weight=100000)
                     else:
-                        G.add_edge(gate_id, f'q_{qubit_index}', weight=1000)
+                        G.add_edge(gate_id, f'q_{qubit_index}', weight=100000)
                 else:
                     # For other qubits, assign weight 1
                     if qubit_index in previous_gate_nodes:

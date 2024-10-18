@@ -124,15 +124,19 @@ def measure_entropy(qc, n_partition, n_qubits, alpha):
 
 #Example
 # import random
-# n_qubits = 15
+# n_qubits = 30
 # qc = QuantumCircuit(n_qubits)
 # for i in range(10):
 #     qc.h(i)
 # for i in range(22):
 #     qc.h(random.randint(0, n_qubits-1))
 #     qubit = random.randint(0, n_qubits-2)
-#     qc.h(q)
+#     qc.h(i)
 #     qc.cx(qubit, qubit+1)
+
+# #mostrar circuito como imagen
+# circuit_image = qc.draw(output='mpl')
+# circuit_image.show()
     
 # print(measure_entropy(qc, 4, n_qubits, 0))
 # print(measure_entropy(qc, 4, n_qubits, 1))

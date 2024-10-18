@@ -26,6 +26,16 @@ def min_cut(qc, exclude_nodes, trials, bool_cuts = None, bool_plot = None):
         if cut < min_cut:
             min_cut = cut
             min_path = path
+    
+    if min_cut >= 100000:
+        while min_cut >= 100000:
+            cut, path, G, pos, name = modified_karger_algorithm.karger_min_cut_circuit(qc, exclude_nodes, False)
+            cuts.append(cut)
+            if cut < min_cut:
+                min_cut = cut
+                min_path = path
+        
+           
     if bool_cuts is not None and bool_cuts is True:
         print(f"The minimum cut passing through the quitbs {exclude_nodes} is: {min_cut}")
         print("The total cuts made are ", cuts)

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
-
+import numpy as np
+import math
 
  # Plot the results of min_cut vs qubits with depth fixed
 def plot_graphs_qubits(total_qubits, total_depth, exclude_nodes, alpha=None):
@@ -153,35 +154,48 @@ def plot_graphs_exclude(total_qubits, total_depth):
     return results
 
 
-#graficar un histograma de los valores de min_cut, son dos columnas min cut y frecuencia
-def histogram_min_cut(total_qubits, total_depth, exclude_nodes, circuits_trials, cut_trials):
+# Graficar un histograma de los valores de min_cut, son dos columnas min cut y frecuencia
+def histogram_min_cut(total_qubits, total_depth, exclude_nodes, circuits_trials):
     dat_file_path_results = f'results/circuits/qubits{total_qubits}_depth{total_depth}/histogram_{exclude_nodes}.dat'
+    
+    # Leer los datos del archivo
     with open(dat_file_path_results, 'r') as dat_file:
-        dat_file.readline()
+        dat_file.readline()  # Saltar la primera línea (encabezado)
         data = dat_file.readlines()
 
     results = {}
 
+    # Procesar los datos
     for line in data:
-        qubits, depth, min_cut_value = line.split()
-        qubits = int(qubits)
-        depth = int(depth)
+        min_cut_value, frequency = line.split()
         min_cut_value = float(min_cut_value)
- 
-        if min_cut_value not in results:
-            results[min_cut_value] = 0
-        
-        results[min_cut_value] += 1
+        frequency = int(frequency) / circuits_trials
+        results[min_cut_value] = frequency 
 
-    plt.bar(results.keys(), results.values())
+    # Graficar el histograma
+    plt.bar(results.keys(), results.values(), label='Histogram')
+
+    if total_qubits == 3:
+        # Calcular y graficar la función P(x)
+        x_values = np.linspace(0, total_depth, 500, endpoint=False)[1:] # Generar 500 puntos entre 0 y total_depth
+        y_values = [
+            (math.gamma(total_depth+1) / ( (2 ** total_depth) *  math.gamma(x+1) * math.gamma(total_depth-x+1) ))
+            for x in x_values
+        ]
+        
+        plt.plot(x_values, y_values, color='red', linestyle='-', label='P(x)')
+
+
+    # Etiquetas y título
     plt.xlabel('Min Cut Value')
     plt.ylabel('Frequency')
     plt.title(f'Min Cut Value Frequency, cutting through {exclude_nodes} qubits')
-    plt.savefig(f'results/graphs/histogram_min_cut_qubits{total_qubits}_depth{total_depth}.png')
+    plt.legend()
+
+    # Guardar la gráfica
+    plt.savefig(f'results/graphs/histogram_qubits{total_qubits}_depth{total_depth}.png')
     plt.close()
     return results
-
-
 
 
 
