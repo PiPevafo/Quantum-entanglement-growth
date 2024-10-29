@@ -31,6 +31,10 @@ def calculate_min_cut(n_qubits, depth, circuits_trial, exclude_nodes, cut_trials
 # Function that will be responsible for handling all trials for a specific combination of n_qubits and depth
 
 def process_trials(n_qubits, depth, exclude_nodes, circuits_trials, cut_trials, dat_file_path_circuits):
+    
+    if circuits_trials == 0:
+        circuits_trials = 10 * (depth)
+    
     min_cut_values = []
     
     # Use an executor to handle trials in parallel
@@ -47,6 +51,10 @@ def process_trials(n_qubits, depth, exclude_nodes, circuits_trials, cut_trials, 
 
 
 def process_trials_entropy(n_qubits, depth, exclude_nodes, circuits_trials, cut_trials, dat_file_path_circuits, alpha):
+    
+    if circuits_trials == 0:
+        circuits_trials = 50 * (depth)
+
     min_cut_values = []
     entropy_values = []
     
